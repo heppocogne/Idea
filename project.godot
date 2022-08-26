@@ -1,0 +1,66 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "FileDialog",
+"class": "CustomDialog",
+"language": "GDScript",
+"path": "res://scenes/main/custom_dialog.gd"
+}, {
+"base": "Reference",
+"class": "IdeaParser",
+"language": "GDScript",
+"path": "res://scenes/item/idea_parser.gd"
+}, {
+"base": "HBoxContainer",
+"class": "ItemText",
+"language": "GDScript",
+"path": "res://scenes/item/item_text.gd"
+}, {
+"base": "ColorRect",
+"class": "ListItem",
+"language": "GDScript",
+"path": "res://scenes/item/list_item.gd"
+}, {
+"base": "WindowDialog",
+"class": "SaveOrDiscardDialog",
+"language": "GDScript",
+"path": "res://scenes/main/save_or_discard_dialog.gd"
+} ]
+_global_script_class_icons={
+"CustomDialog": "",
+"IdeaParser": "",
+"ItemText": "",
+"ListItem": "",
+"SaveOrDiscardDialog": ""
+}
+
+[application]
+
+config/name="Iidea"
+run/main_scene="res://scenes/main/main_panel.tscn"
+config/icon="res://icon.png"
+config/auto_accept_quit=false
+
+[global]
+
+window=false
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"

@@ -1,0 +1,176 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://custome_themes/text_edit_theme.tres" type="Theme" id=1]
+[ext_resource path="res://icons/add-box-line.svg" type="Texture" id=2]
+[ext_resource path="res://icons/search-line.svg" type="Texture" id=3]
+[ext_resource path="res://scenes/main/item_container.gd" type="Script" id=4]
+[ext_resource path="res://scenes/main/input_area_layout.gd" type="Script" id=5]
+[ext_resource path="res://scenes/main/main_layout.gd" type="Script" id=6]
+[ext_resource path="res://scenes/main/main_panel.gd" type="Script" id=7]
+[ext_resource path="res://scenes/main/text_edit.gd" type="Script" id=8]
+[ext_resource path="res://scenes/main/file_menu.gd" type="Script" id=9]
+
+[sub_resource type="InputEventKey" id=9]
+control = true
+command = true
+pressed = true
+scancode = 78
+
+[sub_resource type="ShortCut" id=10]
+shortcut = SubResource( 9 )
+
+[sub_resource type="InputEventKey" id=7]
+control = true
+command = true
+pressed = true
+scancode = 79
+
+[sub_resource type="ShortCut" id=8]
+shortcut = SubResource( 7 )
+
+[sub_resource type="InputEventKey" id=1]
+control = true
+command = true
+pressed = true
+scancode = 83
+
+[sub_resource type="ShortCut" id=2]
+shortcut = SubResource( 1 )
+
+[sub_resource type="InputEventKey" id=3]
+shift = true
+control = true
+command = true
+pressed = true
+scancode = 83
+
+[sub_resource type="ShortCut" id=4]
+shortcut = SubResource( 3 )
+
+[sub_resource type="InputEventKey" id=5]
+control = true
+command = true
+pressed = true
+scancode = 81
+
+[sub_resource type="ShortCut" id=6]
+shortcut = SubResource( 5 )
+
+[node name="MainPanel" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 7 )
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 8
+script = ExtResource( 6 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainLayout"]
+margin_right = 1024.0
+margin_bottom = 20.0
+
+[node name="FileMenu" type="MenuButton" parent="MainLayout/HBoxContainer"]
+margin_right = 35.0
+margin_bottom = 20.0
+text = "File"
+script = ExtResource( 9 )
+new_file = SubResource( 10 )
+open_file = SubResource( 8 )
+save = SubResource( 2 )
+save_as = SubResource( 4 )
+quit = SubResource( 6 )
+
+[node name="Space" type="Control" parent="MainLayout"]
+margin_top = 28.0
+margin_right = 1024.0
+margin_bottom = 28.0
+
+[node name="InputAreaLayout" type="HBoxContainer" parent="MainLayout"]
+margin_top = 36.0
+margin_right = 1024.0
+margin_bottom = 66.0
+rect_min_size = Vector2( 0, 24 )
+custom_constants/separation = 8
+script = ExtResource( 5 )
+
+[node name="Space1" type="Control" parent="MainLayout/InputAreaLayout"]
+margin_bottom = 30.0
+
+[node name="TextEdit" type="TextEdit" parent="MainLayout/InputAreaLayout"]
+margin_left = 8.0
+margin_right = 972.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 240, 24 )
+mouse_filter = 1
+size_flags_horizontal = 3
+theme = ExtResource( 1 )
+wrap_enabled = true
+caret_blink = true
+script = ExtResource( 8 )
+
+[node name="AddButton" type="Button" parent="MainLayout/InputAreaLayout"]
+margin_left = 980.0
+margin_right = 1016.0
+margin_bottom = 30.0
+size_flags_vertical = 0
+icon = ExtResource( 2 )
+
+[node name="SearchButton" type="Button" parent="MainLayout/InputAreaLayout"]
+visible = false
+margin_left = 980.0
+margin_right = 1016.0
+margin_bottom = 30.0
+size_flags_vertical = 0
+icon = ExtResource( 3 )
+
+[node name="Space2" type="Control" parent="MainLayout/InputAreaLayout"]
+margin_left = 1024.0
+margin_right = 1024.0
+margin_bottom = 30.0
+
+[node name="HSeparator" type="HSeparator" parent="MainLayout"]
+self_modulate = Color( 1, 1, 1, 0.498039 )
+margin_top = 74.0
+margin_right = 1024.0
+margin_bottom = 78.0
+
+[node name="ItemListLayout" type="HBoxContainer" parent="MainLayout"]
+margin_top = 86.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 8
+
+[node name="Space1" type="Control" parent="MainLayout/ItemListLayout"]
+margin_bottom = 514.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ItemListLayout"]
+margin_left = 8.0
+margin_right = 1016.0
+margin_bottom = 514.0
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ItemContainer" type="VBoxContainer" parent="MainLayout/ItemListLayout/ScrollContainer"]
+margin_right = 1008.0
+margin_bottom = 514.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 4 )
+
+[node name="Space2" type="Control" parent="MainLayout/ItemListLayout"]
+margin_left = 1024.0
+margin_right = 1024.0
+margin_bottom = 514.0
+
+[connection signal="resized" from="MainLayout/InputAreaLayout" to="MainLayout" method="_on_InputAreaLayout_resized"]
+[connection signal="enter_key_pressed" from="MainLayout/InputAreaLayout/TextEdit" to="MainLayout/ItemListLayout/ScrollContainer/ItemContainer" method="_on_AddButton_pressed"]
+[connection signal="text_changed" from="MainLayout/InputAreaLayout/TextEdit" to="MainLayout/InputAreaLayout" method="_on_TextEdit_text_changed"]
+[connection signal="pressed" from="MainLayout/InputAreaLayout/AddButton" to="MainLayout/ItemListLayout/ScrollContainer/ItemContainer" method="_on_AddButton_pressed"]
+[connection signal="ready" from="MainLayout/ItemListLayout/ScrollContainer/ItemContainer" to="MainLayout/HBoxContainer/FileMenu" method="_on_ItemContainer_ready"]

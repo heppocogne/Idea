@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/main/custom_dialog.gd" type="Script" id=1]
+
+[node name="FileDialog" type="FileDialog"]
+margin_right = 680.0
+margin_bottom = 520.0
+resizable = true
+dialog_hide_on_ok = true
+access = 2
+filters = PoolStringArray( "*.idea", "*.txt" )
+show_hidden_files = true
+script = ExtResource( 1 )
+
+[connection signal="file_selected" from="." to="." method="_on_FileDialog_file_selected"]
