@@ -10,7 +10,9 @@ export var hover_color:Color=Color(0.25098, 0.270588, 0.32549)
 
 var mouse_entered:=false
 var focused:=false setget set_focused
-var parent_item:ListItem
+# Bug?: Using self class_name specifier causes instance leaking
+#var parent_item:ListItem
+var parent_item:ColorRect
 var _ctrl_pressed:=false
 var _shift_pressed:=false
 var _hbox_container:HBoxContainer
