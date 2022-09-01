@@ -9,7 +9,7 @@ export var base_color:Color=Color(0.168627, 0.192157, 0.25098)
 export var hover_color:Color=Color(0.25098, 0.270588, 0.32549)
 
 var mouse_entered:=false
-var focused:=false setget set_focused
+var selected:=false setget set_selected
 # Bug?: Using self class_name specifier causes instance leaking
 #var parent_item:ListItem
 var parent_item:ColorRect
@@ -86,8 +86,8 @@ func to_string()->String:
 	return indents+check_state+item_text_label.text.replace("\n","\n"+indents+"\t")+"\n"
 
 
-func set_focused(flag:bool):
-	focused=flag
+func set_selected(flag:bool):
+	selected=flag
 	if flag:
 		color=hover_color
 	else:
@@ -96,8 +96,8 @@ func set_focused(flag:bool):
 			cancel_edit()
 
 
-func toggle_focused():
-	set_focused(!focused)
+func toggle_selected():
+	set_selected(!selected)
 
 
 func start_edit():

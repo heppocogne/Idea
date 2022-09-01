@@ -5,7 +5,7 @@ const _scene_list_item:=preload("res://scenes/item/list_item.tscn")
 onready var _text_edit:TextEdit=get_node("../../../InputAreaLayout/TextEdit")
 var _eidting_item:ListItem
 var _item_shift_pressed:ListItem
-var _focused_items:=[]
+var _selected_items:=[]
 
 
 func _ready():
@@ -13,11 +13,15 @@ func _ready():
 
 
 func clear():
-	_eidting_item=null
-	_item_shift_pressed=null
-	_focused_items.clear()
+	clear_selection()
 	for c in get_children():
 		c.queue_free()
+
+
+func clear_selection():
+	_eidting_item=null
+	_item_shift_pressed=null
+	_selected_items.clear()
 
 
 func _on_AddButton_pressed():
@@ -52,26 +56,26 @@ func child_index(node:Node)->int:
 
 
 func _on_ListItem_clicked(item:ListItem,key_flags:int):
-	if key_flags==ListItem.KEY_FLAGS.NONE or _focused_items.size()==0:
-		if item.focused and _focused_items.size()==1:
-			_focused_items.erase(item)
-			item.set_focused(false)
+	if key_flags==ListItem.KEY_FLAGS.NONE or _selected_items.size()==0:
+		if item.selected and _selected_items.size()==1:
+			_selected_items.erase(item)
+			item.set_selected(false)
 		else:
-			for i in _focused_items:
-				i.set_focused(false)
-			_focused_items.clear()
-			_focused_items.push_back(item)
-			item.set_focused(true)
+			for i in _selected_items:
+				i.set_selected(false)
+			_selected_items.clear()
+			_selected_items.push_back(item)
+			item.set_selected(true)
 		
 		_item_shift_pressed=null
 		return
 	elif key_flags==ListItem.KEY_FLAGS.CTRL_PRESSED:
-		if item.focused:
-			_focused_items.erase(item)
-			item.set_focused(false)
+		if item.selected:
+			_selected_items.erase(item)
+			item.set_selected(false)
 		else:
-			_focused_items.push_back(item)
-			item.set_focused(true)
+			_selected_items.push_back(item)
+			item.set_selected(true)
 		
 		_item_shift_pressed=null
 		return
@@ -81,8 +85,8 @@ func _on_ListItem_clicked(item:ListItem,key_flags:int):
 		if _item_shift_pressed:
 			begin_index=child_index(_item_shift_pressed)
 		else:
-			begin_index=child_index(_focused_items.back())
-			_item_shift_pressed=_focused_items.back()
+			begin_index=child_index(_selected_items.back())
+			_item_shift_pressed=_selected_items.back()
 		var end_index:=child_index(item)
 		if end_index<begin_index:
 			var temp:=begin_index
@@ -92,9 +96,9 @@ func _on_ListItem_clicked(item:ListItem,key_flags:int):
 		for index in range(children.size()):
 			var check_item:ListItem=children[index]
 			if begin_index<=index and index<=end_index:
-				if !check_item.focused:
-					_focused_items.push_back(check_item)
-					check_item.set_focused(true)
-			elif !ctrl_pressed and check_item.focused:
-				_focused_items.erase(check_item)
-				check_item.set_focused(false)
+				if !check_item.selected:
+					_selected_items.push_back(check_item)
+					check_item.set_selected(true)
+			elif !ctrl_pressed and check_item.selected:
+				_selected_items.erase(check_item)
+				check_item.set_selected(false)
