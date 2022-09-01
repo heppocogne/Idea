@@ -15,7 +15,7 @@ export var quit:ShortCut	# ctrl+q
 var save_process_state:int
 var load_process_state:int
 
-onready var _item_container:=get_node("../../ItemListLayout/ScrollContainer/ItemContainer")
+onready var _item_container:=get_node("../../ItemListLayout/ScrollContainer/ItemView")
 var _item_container_hash:int
 var current_file:String setget set_current_file
 var _save_dialog:CustomDialog

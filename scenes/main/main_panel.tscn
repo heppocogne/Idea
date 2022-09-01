@@ -3,7 +3,7 @@
 [ext_resource path="res://custome_themes/text_edit_theme.tres" type="Theme" id=1]
 [ext_resource path="res://icons/add-box-line.svg" type="Texture" id=2]
 [ext_resource path="res://icons/search-line.svg" type="Texture" id=3]
-[ext_resource path="res://scenes/main/item_container.gd" type="Script" id=4]
+[ext_resource path="res://scenes/main/item_view.gd" type="Script" id=4]
 [ext_resource path="res://scenes/main/input_area_layout.gd" type="Script" id=5]
 [ext_resource path="res://scenes/main/main_layout.gd" type="Script" id=6]
 [ext_resource path="res://scenes/main/main_panel.gd" type="Script" id=7]
@@ -157,7 +157,7 @@ mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ItemContainer" type="VBoxContainer" parent="MainLayout/ItemListLayout/ScrollContainer"]
+[node name="ItemView" type="VBoxContainer" parent="MainLayout/ItemListLayout/ScrollContainer"]
 margin_right = 1008.0
 margin_bottom = 514.0
 size_flags_horizontal = 3
@@ -170,7 +170,7 @@ margin_right = 1024.0
 margin_bottom = 514.0
 
 [connection signal="resized" from="MainLayout/InputAreaLayout" to="MainLayout" method="_on_InputAreaLayout_resized"]
-[connection signal="enter_key_pressed" from="MainLayout/InputAreaLayout/TextEdit" to="MainLayout/ItemListLayout/ScrollContainer/ItemContainer" method="_on_AddButton_pressed"]
+[connection signal="enter_key_pressed" from="MainLayout/InputAreaLayout/TextEdit" to="MainLayout/ItemListLayout/ScrollContainer/ItemView" method="_on_AddButton_pressed"]
 [connection signal="text_changed" from="MainLayout/InputAreaLayout/TextEdit" to="MainLayout/InputAreaLayout" method="_on_TextEdit_text_changed"]
-[connection signal="pressed" from="MainLayout/InputAreaLayout/AddButton" to="MainLayout/ItemListLayout/ScrollContainer/ItemContainer" method="_on_AddButton_pressed"]
-[connection signal="ready" from="MainLayout/ItemListLayout/ScrollContainer/ItemContainer" to="MainLayout/HBoxContainer/FileMenu" method="_on_ItemContainer_ready"]
+[connection signal="pressed" from="MainLayout/InputAreaLayout/AddButton" to="MainLayout/ItemListLayout/ScrollContainer/ItemView" method="_on_AddButton_pressed"]
+[connection signal="ready" from="MainLayout/ItemListLayout/ScrollContainer/ItemView" to="MainLayout/HBoxContainer/FileMenu" method="_on_ItemContainer_ready"]
