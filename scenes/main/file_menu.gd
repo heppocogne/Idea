@@ -109,10 +109,10 @@ func _on_menu_invoked(index:int):
 			get_tree().quit(0)
 		else:
 			_item_container.clear()
+			_update_item_container_hash()
 			if index==0:	# new
 				_save_dialog.window_title="New File"
 				_save_dialog.current_file=new_file_name
-				_update_item_container_hash()
 				_save_dialog.call_deferred("popup_centered")
 			else:	# open
 				_open_dialog.window_title="Open File"

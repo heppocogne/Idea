@@ -27,8 +27,11 @@ func clear():
 	_eidting_item=null
 	_item_shift_pressed=null
 	_selected_items.clear()
-	for c in get_children():
-		c.queue_free()
+	# remove children to updated hash
+	while get_child_count():
+		var last:Node=get_children().back()
+		remove_child(last)
+		last.queue_free()
 
 
 func _on_AddButton_pressed():

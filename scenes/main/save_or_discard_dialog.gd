@@ -9,10 +9,6 @@ enum UserChoice{
 	CANCEL,
 }
 
-onready var save_button:Button=$VBoxContainer/HBoxContainer/Save
-onready var discard_button:Button=$VBoxContainer/HBoxContainer/Discard
-onready var cancel_button:Button=$VBoxContainer/HBoxContainer/Cancel
-
 
 func _ready():
 	pass
