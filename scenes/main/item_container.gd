@@ -12,16 +12,23 @@ func _ready():
 	pass
 
 
+func _gui_input(event:InputEvent):
+	if event is InputEventMouseButton:
+		var mb:=event as InputEventMouseButton
+		if mb.pressed and mb.button_index==BUTTON_LEFT:
+			_eidting_item=null
+			_item_shift_pressed=null
+			for i in _selected_items:
+				i.set_selected(false)
+			_selected_items.clear()
+
+
 func clear():
-	clear_selection()
-	for c in get_children():
-		c.queue_free()
-
-
-func clear_selection():
 	_eidting_item=null
 	_item_shift_pressed=null
 	_selected_items.clear()
+	for c in get_children():
+		c.queue_free()
 
 
 func _on_AddButton_pressed():
