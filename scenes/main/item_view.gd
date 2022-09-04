@@ -68,7 +68,9 @@ func add_list_item(new_list_item:ListItemContainer):
 	add_child(new_list_item)
 # warning-ignore:return_value_discarded
 	new_list_item.content.connect("clicked",self,"_on_ListItem_clicked")
+# warning-ignore:return_value_discarded
 	new_list_item.content.connect("edit_started",self,"_on_Item_edit_started")
+# warning-ignore:return_value_discarded
 	new_list_item.content.connect("edit_completed",self,"_on_Item_edit_completed")
 
 
