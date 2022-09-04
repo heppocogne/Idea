@@ -46,9 +46,9 @@ func reject_text_edit():
 
 
 func _on_TextEdit_text_changed():
-	assert(_text_edit.text!="")
-	assert(_text_edit.rect_size.x!=0 and _text_edit.rect_size.y!=0)
 	var size_request:=_text_edit_font.get_wordwrap_string_size(_text_edit.text,_text_edit.rect_size.x)
+	if size_request.y==0:
+		size_request.y=24
 	if _text_edit.rect_size.y!=size_request.y:
 		_text_edit.rect_min_size=Vector2(_text_edit.rect_min_size.x,size_request.y)
 		fit_child_in_rect(_text_edit,Rect2(_text_edit.get_rect().position,Vector2(_text_edit.rect_size.x,size_request.y)))

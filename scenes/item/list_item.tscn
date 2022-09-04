@@ -10,10 +10,8 @@
 
 [node name="ListItem" type="ColorRect"]
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -486.0
-margin_bottom = -576.0
 rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 3
 color = Color( 0.168627, 0.192157, 0.25098, 1 )
 script = ExtResource( 1 )
 

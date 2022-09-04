@@ -2,7 +2,7 @@ extends MenuButton
 
 const _scene_custom_dialog:=preload("res://scenes/main/custom_dialog.tscn")
 const _scene_save_or_discard_dialog:=preload("res://scenes/main/save_or_discard_dialog.tscn")
-const _scene_list_item:=preload("res://scenes/item/list_item.tscn")
+const _scene_list_item_container:=preload("res://scenes/item/list_item_container.tscn")
 const new_file_name:="new_idea.idea"
 
 export var new_file:ShortCut
@@ -15,8 +15,8 @@ export var quit:ShortCut	# ctrl+q
 var save_process_state:int
 var load_process_state:int
 
-onready var _item_container:=get_node("../../ItemListLayout/ScrollContainer/ItemView")
-var _item_container_hash:int
+onready var _item_view:ItemView=get_node("../../ItemListLayout/ScrollContainer/ItemView")
+var _item_view_hash:int
 var current_file:String setget set_current_file
 var _save_dialog:CustomDialog
 var _open_dialog:CustomDialog
@@ -77,20 +77,20 @@ func set_current_file(new_filename:String):
 		OS.set_window_title("Idea")
 
 
-func _calculate_item_container_hash()->int:
+func _calculate_item_view_hash()->int:
 	var items:=[]
-	for item in _item_container.get_children():
-		items.push_back(item.to_dictionary())
+	for item in _item_view.get_children():
+		items.push_back(item.content.to_dictionary())
 	return items.hash()
 
 
-func _update_item_container_hash():
-	_item_container_hash=_calculate_item_container_hash()
+func _update_item_view_hash():
+	_item_view_hash=_calculate_item_view_hash()
 
 
 func _on_menu_invoked(index:int):
 	if index==0 or index==2 or index==7:	# new, open, quit
-		if _item_container_hash!=_calculate_item_container_hash():
+		if _item_view_hash!=_calculate_item_view_hash():
 			_save_or_discard_dialog.call_deferred("popup_centered")
 			var user_request:int=yield(_save_or_discard_dialog,"action_completed")
 			if user_request==_save_or_discard_dialog.UserChoice.SAVE:
@@ -108,8 +108,8 @@ func _on_menu_invoked(index:int):
 		if index==7:	# quit
 			get_tree().quit(0)
 		else:
-			_item_container.clear()
-			_update_item_container_hash()
+			_item_view.clear()
+			_update_item_view_hash()
 			if index==0:	# new
 				_save_dialog.window_title="New File"
 				_save_dialog.current_file=new_file_name
@@ -126,7 +126,7 @@ func _on_menu_invoked(index:int):
 		else:
 # warning-ignore:return_value_discarded
 			save_to_file(current_file)
-			_update_item_container_hash()
+			_update_item_view_hash()
 	elif index==5:	# save as
 		_save_dialog.window_title="Save a File"
 		if current_file=="":
@@ -138,7 +138,9 @@ func _on_menu_invoked(index:int):
 
 func _on_save_dialog_file_selected(file_path:String):
 # warning-ignore:return_value_discarded
-	save_to_file(file_path,true)
+	save_to_file(file_path)
+	set_current_file(filename)
+	_update_item_view_hash()
 
 
 func _on_open_dialog_file_selected(file_path:String):
@@ -146,18 +148,15 @@ func _on_open_dialog_file_selected(file_path:String):
 	load_from_file(file_path)
 
 
-func save_to_file(filename:String,set_to_current_file:bool=false)->int:
+func save_to_file(filename:String)->int:
 	save_process_state=-1
 	var file:=File.new()
 	var open_result:=file.open(filename,File.WRITE)
 	if open_result==OK:
-		for item in _item_container.get_children():
-			file.store_string(item.to_string())
+		for item in _item_view.get_children():
+			file.store_string(item.content.to_string())
 		file.close()
 		save_process_state=OK
-		if set_to_current_file:
-			set_current_file(filename)
-			_update_item_container_hash()
 	else:
 		save_process_state=open_result
 		printerr("failed to open ",filename,"\nerror code:",open_result)
@@ -169,16 +168,33 @@ func load_from_file(filename:String)->int:
 	var parser:IdeaParser=preload("res://scenes/item/idea_parser.gd").new()
 	var parse_result:=parser.parse_file(filename)
 	if parser.parser_error_state==OK:
+		var parents_stack:Array=[null]
 		for elem in parse_result:
-			var new_item:ListItem=_scene_list_item.instance()
-			_item_container.add_list_item(new_item)
-			new_item.check_box.pressed=(elem["check_state"]=="v")
-			# TODO: support indentation
-			new_item.item_text_label.text=elem["text"]
+			var new_list_item_container:ListItemContainer=_scene_list_item_container.instance()
+			_item_view.add_list_item(new_list_item_container)
+			new_list_item_container.content.check_box.pressed=(elem["check_state"]=="v")
+			
+			var pre_indent_level:=parents_stack.size()-1
+			var indent_level:int=elem["indents"]
+			if parents_stack.size()<indent_level:
+				load_process_state=ERR_INVALID_DATA
+				printerr("unexpected indentation in ",filename,"\nerror code:",ERR_INVALID_DATA)
+				return load_process_state
+			
+			if indent_level<=pre_indent_level:
+				while parents_stack.size()!=indent_level:
+					parents_stack.pop_back()
+				if 0<indent_level:
+					new_list_item_container.content.set_parent_item(parents_stack.back())
+				parents_stack.push_back(new_list_item_container.content)
+			else:	# indent_level==pre_indent_level+1:
+				new_list_item_container.content.set_parent_item(parents_stack.back())
+				parents_stack.push_back(new_list_item_container.content)
+			
+			new_list_item_container.content.item_text_label.text=elem["text"]
 		set_current_file(filename)
-		_update_item_container_hash()
+		_update_item_view_hash()
 		load_process_state=OK
-		return load_process_state
 	else:
 		load_process_state=parser.parser_error_state
 		printerr("failed to parse ",filename,"\nerror code:",parser.parser_error_state)
@@ -186,7 +202,7 @@ func load_from_file(filename:String)->int:
 
 
 func _on_ItemContainer_ready():
-	_update_item_container_hash()
+	_update_item_view_hash()
 
 
 func _notification(what):

@@ -24,10 +24,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/item/item_text.gd"
 }, {
+"base": "VBoxContainer",
+"class": "ItemView",
+"language": "GDScript",
+"path": "res://scenes/main/item_view.gd"
+}, {
 "base": "ColorRect",
 "class": "ListItem",
 "language": "GDScript",
 "path": "res://scenes/item/list_item.gd"
+}, {
+"base": "HBoxContainer",
+"class": "ListItemContainer",
+"language": "GDScript",
+"path": "res://scenes/item/list_item_container.gd"
 }, {
 "base": "WindowDialog",
 "class": "SaveOrDiscardDialog",
@@ -38,7 +48,9 @@ _global_script_class_icons={
 "CustomDialog": "",
 "IdeaParser": "",
 "ItemText": "",
+"ItemView": "",
 "ListItem": "",
+"ListItemContainer": "",
 "SaveOrDiscardDialog": ""
 }
 

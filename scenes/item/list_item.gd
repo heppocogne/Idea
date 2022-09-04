@@ -4,6 +4,9 @@ extends ColorRect
 signal edit_started(ref_self)
 signal edit_completed(ref_self)
 signal clicked(ref_self,key_flags)
+# children items and item_container should accept level_updated()
+# ref_self is only used to assert
+signal level_updated(ref_self)
 
 export var base_color:Color=Color(0.168627, 0.192157, 0.25098)
 export var hover_color:Color=Color(0.25098, 0.270588, 0.32549)
@@ -11,8 +14,8 @@ export var hover_color:Color=Color(0.25098, 0.270588, 0.32549)
 var mouse_entered:=false
 var selected:=false setget set_selected
 # Bug?: Using self class_name specifier causes instance leaking
-#var parent_item:ListItem
-var parent_item:ColorRect
+var parent_item setget set_parent_item
+#var children_items:Array=[]
 var _ctrl_pressed:=false
 var _shift_pressed:=false
 var _hbox_container:HBoxContainer
@@ -31,6 +34,27 @@ enum KEY_FLAGS{
 
 func _ready():
 	pass
+
+
+func set_parent_item(new_parent_item):
+	assert(new_parent_item==null or new_parent_item.get_script()==load("res://scenes/item/list_item.gd"))
+	if parent_item:
+#		assert(parent_item.children_items is Array)
+		parent_item.disconnect("level_updated",self,"_handle_level_updated")
+#		parent_item.children_items.erase(self)
+	
+	parent_item=new_parent_item
+	if parent_item:
+		parent_item.connect("level_updated",self,"_handle_level_updated")
+#		assert(parent_item.children_items is Array)
+#		parent_item.children_items.push_back(self)
+	emit_signal("level_updated",self)
+
+
+func _handle_level_updated(p):
+	assert(p==parent_item)
+	# notification for children items
+	emit_signal("level_updated",self)
 
 
 func _input(event:InputEvent):
